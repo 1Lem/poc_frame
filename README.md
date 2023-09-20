@@ -57,3 +57,8 @@ def poc():  #自定义poc内容
 py -3 poc_frame.py
 
 20230919持续优化中
+
+#### 更新为加载yml实现漏洞验证
+py -3 poc_frame_config_yml.py -c config.yml
+py -3 poc_frame_config_yml.py -c xxxxx.yml
+
