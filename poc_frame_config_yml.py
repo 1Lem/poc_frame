@@ -119,6 +119,8 @@ def scan_regex_match_url(url,find_list,Secondary_verification_path,header):
     scan_path=f"{url}{Secondary_verification_path}{find_list[0]}" #根据实际情况组合地址路径
     if requests.get(scan_path,timeout=timeout_s,headers=header,verify=False).status_code == 200:
         print(f'success:{scan_path}') 
+        with open(f'Secondary_verification_success.txt', mode='a') as file_handle:
+            file_handle.write(f"{scan_path}\n")
     else:
         print(f'wrong_{requests.get(scan_path,timeout=timeout_s,headers=header,verify=False).status_code}:{scan_path}') 
 
