@@ -78,36 +78,4 @@ class ScanBase:
         requests_methods = {'get': requests.get, 'post': requests.post, 'put': requests.put, 'delete': requests.delete}
         return timeout_s,proxies,requests_methods
 
-    # def readfiles(self): #批量读取文件，文本格式为https://127.0.0.1:8080
-    #     result = []
-    #     with open(r'urls.txt' ,'r') as f:
-    #         for line in f:
-    #          result.append(line.strip().split(',')[0])
-    #         return result
-
-    # def load_poc(self,config_path):  #自定义加载poc内容
-    #     with open(config_path, 'r', encoding='utf-8') as file:
-    #         config = yaml.safe_load(file)
-    #     config_path = config_path
-    #     Author = config['Poc']['Author']
-    #     Condition = config['Poc']['Condition']
-    #     Name = config['Poc']['Name']
-    #     Vulnerability_details = config['Poc']['Vulnerability details']
-    #     Solutions = config['Poc']['Solutions']
-    #
-    #     method = config['Poc']['method']
-    #     poc_url_path = config['Poc']['poc_url_path']
-    #     header = config['Poc']['header']
-    #     poc_files = config['Poc']['poc_files']
-    #     poc_post_data = config['Poc']['poc_post_data']
-    #     poc_json_data = config['Poc']['poc_json_data']
-    #     verification = config['Poc']['verification']
-    #     re_data_keyword = config['Poc']['re_data_keyword']
-    #     regex_match = config['Poc']['regex_match']
-    #     status_code  = config['Poc']['status_code']
-    #     Secondary_verification  = config['Poc']['Secondary_verification']
-    #     Secondary_verification_path = config['Poc']['Secondary_verification_path']
-    #     print(f'loading：{config_path}')
-    #     self.title(Author,Condition,Name,Vulnerability_details,Solutions)
-
-        #scan_urls_method(poc_url_path, poc_post_data,header,poc_files,method,verification,re_data_keyword,regex_match,poc_json_data,config_path,status_code,Secondary_verification,Secondary_verification_path)
+   
