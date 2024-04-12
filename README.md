@@ -65,3 +65,5 @@ py -3 poc_frame_config_yml.py -c xxxxx.yml
 
 #### 20231011
 适应了一段时间nuclei，还是nuclei好用，就不重复造轮子了，nuclei解决不了问题时再启用这个版本
+#### 20240412
+优化了一下框架逻辑，调整了代码分布；更好适应需要二次请求验证的poc
