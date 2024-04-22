@@ -11,6 +11,7 @@ import argparse
 import yaml
 import os
 from Lem_base import ScanBase
+import concurrent.futures
 requests.packages.urllib3.disable_warnings()
 
 class Scanner:
@@ -32,30 +33,53 @@ class Scanner:
 
     def scan_urls_method(self):
         result = self.readfiles()
-        #print(f"url列表：{result}")
+
+        # 创建一个 ThreadPoolExecutor 实例，这里假设我们最多使用 10 个线程
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            # 提交每个 URL 的扫描任务到线程池
+            future_to_url = {executor.submit(self.scan_single_url, url): url for url in result}
+
+            for future in concurrent.futures.as_completed(future_to_url):
+                url = future_to_url[future]
+                try:
+                    # 获取线程执行的结果
+                    data = future.result()
+                    # 如果线程返回了数据，可以继续处理
+                    if data:
+                        print(f'multithreading success： {url}')
+                except Exception as exc:
+                    print(f'生成 {url} 的结果时出错: {exc}')
+
+    def scan_single_url(self, url):
         timeout_s,proxies,requests_methods = self.scan_base.basic_setting()
-        #timeout_s,regex_match,_ ,requests_methods= basic_setting()  #禁用proxies
-        for url in result:
-            scan_url = f"{url}{self.scan_base.poc_url_path}"
-            print(scan_url)
-            try:
-                if self.scan_base.method in requests_methods:
-                    re_data = requests_methods[self.scan_base.method] (scan_url,data=self.scan_base.poc_post_data,json=self.scan_base.poc_json_data,files=self.scan_base.poc_files,timeout=timeout_s,headers=self.scan_base.header,verify=False,proxies='')
-                else:
-                    raise ValueError('Invalid method. Only "get", "post", "put" and "delete" are supported.')
-                print(f"status_code：{re_data.status_code}")
-                print(re_data.text)
-                if re_data.status_code == self.scan_base.status_code:
-                    #if re_data.status_code == 200:
-                    with open(self.output_file_1, mode='a') as file_handle:
-                        self.process_verification(url,scan_url,file_handle,re_data)
-                else:
-                    print("不存在")
-                    #print(re_data.text)
-            except requests.exceptions.RequestException as e:
-                print(f"请检查目标列表 \n {str(e)}")
-                #print(re_data.status_code)
-                #print(str(e))
+        #timeout_s,_ ,requests_methods= basic_setting()  #禁用proxies
+        scan_url = f"{url}{self.scan_base.poc_url_path}"
+        print(scan_url)
+        try:
+            if self.scan_base.method in requests_methods:
+                re_data = requests_methods[self.scan_base.method] (scan_url,
+                                                                   data=self.scan_base.poc_post_data,
+                                                                   json=self.scan_base.poc_json_data,
+                                                                   files=self.scan_base.poc_files,
+                                                                   timeout=timeout_s,
+                                                                   headers=self.scan_base.header,
+                                                                   verify=False,
+                                                                   proxies='')
+            else:
+                raise ValueError('Invalid method. Only "get", "post", "put" and "delete" are supported.')
+            print(f"status_code：{re_data.status_code}")
+            print(re_data.text)
+            if re_data.status_code == self.scan_base.status_code:
+                #if re_data.status_code == 200:
+                with open(self.output_file_1, mode='a') as file_handle:
+                    self.process_verification(url,scan_url,file_handle,re_data)
+            else:
+                print("不存在")
+                #print(re_data.text)
+        except requests.exceptions.RequestException as e:
+            print(f"请检查目标列表 \n {str(e)}")
+            #print(re_data.status_code)
+            #print(str(e))
 
     def process_verification(self,url,scan_url,file_handle,re_data):
         if self.scan_base.verification == 'status_code':
